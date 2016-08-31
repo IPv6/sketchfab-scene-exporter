@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.40
+// @version        1.42
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -241,23 +241,28 @@ function downloadString(filename, ext, str) {
 
 var imagesDownloaded = {};
 // source: http://muaz-khan.blogspot.com/2012/10/save-files-on-disk-using-javascript-or.html
-function downloadFileAtURL(fileURL) {
+function downloadFileAtURL(fileURL, fileName) {
     if (!imagesDownloaded[fileURL]) {
         imagesDownloaded[fileURL] = true;
+        var reader = new FileReader();
+	reader.readAsDataURL(fileURL);
+	reader.onload = function (event) {
         var save = document.createElement('a');
-        save.href = fileURL;
+        save.href = event.target.result;
         save.target = '_blank';
-        save.download = '';
+        save.download = fileName || 'unknown file';
+
         var event = document.createEvent('Event');
         event.initEvent('click', true, true);
         save.dispatchEvent(event);
         (window.URL || window.webkitURL).revokeObjectURL(save.href);
+    };
     }
 }
 
 function downloadModels() {
     if (models.length == 0) {
-    	alert("Download script failed... try refreshing the page");
+    	alert("Script failed... something changed on Sketchfab!");
         return;
     }
     var combinedOBJ = '';
@@ -268,7 +273,7 @@ function downloadModels() {
         combinedMTL += model.mtl + nl;
         model.textures.forEach(function(texture) {
         	console.log(["downloadModels downloadFileAtURL",texture]);
-        	downloadFileAtURL(texture.url);
+        	downloadFileAtURL(texture.url, texture.filename);
         });
     });
     downloadString(baseModelName, 'obj', combinedOBJ);
@@ -278,7 +283,7 @@ function downloadModels() {
 ///////////////////////// HELPERS /////////////////////////////////////////////////////////////////////////
 function overrideDrawImplementation() {
 	try{
-	    //console.log("OGL Injection: patching OSG");
+	    console.log("OGL Injection: patching OSG");
 	    var geometry = window.OSG.Geometry;
 	    var newPrototype = unfreeze(geometry.prototype);
 	    geometry.prototype = newPrototype;
@@ -310,25 +315,21 @@ function overrideDrawImplementation() {
 	    console.log("OGL Injection: OSG patched OK!");
 	    return true;
 	}catch(e){
-		//console.log("OGL Injection:  failed "+e);
+		console.log("OGL Injection: patching failed "+e);
 		return false;
 	}
 }
 
+var drawOverrided = false;
 window.stealOSG = function(k){
 	//console.log("OGL Injection: osg intercept");
-	if(k.osg){
+	if(drawOverrided == false && k.osg){
 		window.OSG = k.osg;
+		if(overrideDrawImplementation()){
+			drawOverrided = true;
+		}
 	};
 };
-
-function tryInterceptOGL() {
-	if(!overrideDrawImplementation()){
-		setTimeout(function () {
-        		tryInterceptOGL();
-        	}, 1);
-	}
-}
 
 console.log("OGL Injection: initializing events");
 document.addEventListener('DOMContentLoaded', function(e) {
@@ -400,8 +401,6 @@ window.addEventListener('beforescriptexecute', function(e) {
 		se.type = "text/javascript";
 		se.text = viewertext;
 		document.getElementsByTagName('head')[0].appendChild(se);
-		tryInterceptOGL();
-		
 	};
 }, true);
 console.log("OGL Injection: events initialized");
