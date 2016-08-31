@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.46
+// @version        1.47
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -137,12 +137,15 @@ function OBJforGeometry(geom) {
 }
 
 var textureMTLMap = {
-    DiffuseColor: "map_Kd",
-    SpecularColor: "map_Ks",
-    NormalMap : "map_bump",
-    EmitColor : "map_Ke",
-    AlphaMask : "map_d",
-    Opacity : "map_o"
+	DiffusePBR: "map_Kd",
+	DiffuseColor: "map_Kd",
+	SpecularPBR: "map_Ks",
+	SpecularColor: "map_Ks",
+	GlossinessPBR: "map_Pm",
+ 	NormalMap : "map_bump",
+ 	EmitColor : "map_Ke",
+ 	AlphaMask : "map_d",
+ 	Opacity : "map_o"
 };
 
 // source: http://stackoverflow.com/a/3820412
