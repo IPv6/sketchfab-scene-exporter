@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.37
+// @version        1.38
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
