@@ -15,6 +15,4 @@ Compatibility
 ---------------------
 Tested and working on Chrome + TamperMonkey and Opera + ViolentMonkey.  
 
-Preview
----------------------
-![Example](https://raw.githubusercontent.com/reinitialized/sketchfab-dl-script/master/sketchfabToBlender.png)
+
