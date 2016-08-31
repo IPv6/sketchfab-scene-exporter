@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.14
+// @name           sketchfab-obj-exporter-1.15
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.14
+// @version        1.15
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -254,18 +254,18 @@ function getElementByXpath(path) {
 
 var addedDownloadButton = false;
 var downloadButtonParentXPath = "//div[@class='titlebar']";
-var osgScriptElementPath = "//script[contains (@src, 'cloudfront')]";
+//var osgScriptElementPath = "//script[contains (@src, 'cloudfront')]";
 var foundOsgScript = false;
 
 observeDOM(document.body, function(){ 
-    if (!foundOsgScript) {
-    	//if (osgScript = getElementByXpath(osgScriptElementPath)) { 
-        if(overrideDrawImplementation()){
-       		foundOsgScript = true;
-        }
-    	//}
-    }
     if (!addedDownloadButton) {
+	    if (!foundOsgScript) {
+	    	//if (osgScript = getElementByXpath(osgScriptElementPath)) { 
+	        if(overrideDrawImplementation()){
+	       		foundOsgScript = true;
+	        }
+	    	//}
+	    }
         if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
         {
             setTimeout(function () {
