@@ -341,7 +341,7 @@ function downloadModels() {
 function addDownloadButton(downloadButtonParent) {
     var downloadButton = document.createElement("a");
     downloadButton.setAttribute("class", "control");
-    downloadButton.innerHTML = "<pre>DOWNLOAD  </pre>";
+    downloadButton.innerHTML = "<pre>OBJ-DOWNLOAD</pre>";
     downloadButton.addEventListener("click", downloadModels , false);
     downloadButtonParent.appendChild(downloadButton);
 }
