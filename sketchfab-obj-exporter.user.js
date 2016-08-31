@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.11
+// @name           sketchfab-obj-exporter-1.12
 // @description    lets you export Sketchfab scenes
 // @author         Reinitialized
 //
 //Version Number
-// @version        1.11
+// @version        1.12
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -341,7 +341,7 @@ function downloadModels() {
 function addDownloadButton(downloadButtonParent) {
     var downloadButton = document.createElement("a");
     downloadButton.setAttribute("class", "control");
-    downloadButton.innerHTML = "<pre>OBJ-DOWNLOAD</pre>";
+    downloadButton.innerHTML = foundOsgScript?"<pre>OBJ-DOWNLOAD</pre>":"<pre>OBJ-FAIL</pre>";
     downloadButton.addEventListener("click", downloadModels , false);
     downloadButtonParent.appendChild(downloadButton);
 }
