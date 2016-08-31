@@ -1,16 +1,24 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.30
+// @name           sketchfab-obj-exporter-1.31
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.30
+// @version        1.31
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
 // @run-at         document-start
 // @grant none
 // ==/UserScript==
+
+var viewer_src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-31.js";
+var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
+
+// source: http://stackoverflow.com/a/8485137
+function safeName(s) {
+    return s.replace(/[^a-zA-Z0-9]/gi, '_').toLowerCase();
+}
 
 function unfreeze(obj) {
     var copy = {};
@@ -20,14 +28,13 @@ function unfreeze(obj) {
     return copy;
 }
 
-var models = [];
-var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
-
-// source: http://stackoverflow.com/a/8485137
-function safeName(s) {
-    return s.replace(/[^a-zA-Z0-9]/gi, '_').toLowerCase();
+// source: http://stackoverflow.com/questions/10596417/is-there-a-way-to-get-element-by-xpath-in-javascript
+function getElementByXpath(path) {
+    return document.evaluate(path, document, null, 9, null).singleNodeValue;
 }
- 
+
+////////////////////// OBJ STUFF /////////////////////////////////////////////////////////////////////////
+var models = [];
 function InfoForGeometry(geom) {
     var attributes = geom.attributes;
     if (!attributes)
@@ -260,11 +267,6 @@ function downloadModels() {
 }
 
 ///////////////////////// HELPERS /////////////////////////////////////////////////////////////////////////
-// source: http://stackoverflow.com/questions/10596417/is-there-a-way-to-get-element-by-xpath-in-javascript
-function getElementByXpath(path) {
-    return document.evaluate(path, document, null, 9, null).singleNodeValue;
-}
-
 function overrideDrawImplementation() {
 	try{
 	    //console.log("OGL Injection: patching OSG");
@@ -320,11 +322,11 @@ window.addEventListener('beforescriptexecute', function(e) {
 	}
 	console.log("OGL Injection: beforescriptexecute event: "+src);
 	if (src.indexOf("web/dist/commons") >= 0) {
-		console.log("OGL Injection: mixing in hijacked viewer");
+		console.log("OGL Injection: mixing in hijacked viewer from "+viewer_src);
 		var scriptElement = document.createElement( "script" );
 		scriptElement.type = "text/javascript";
-		scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-29.js";
-		document.body.appendChild( scriptElement );
+		scriptElement.src = viewer_src;
+		document.head.appendChild( scriptElement );
 		tryInterceptOGL();
 	};
 	if (src.indexOf("web/dist/viewer") >= 0) {
