@@ -36,7 +36,7 @@ function getElementByXpath(path) {
 
 ////////////////////// OBJ STUFF /////////////////////////////////////////////////////////////////////////
 var models = [];
-var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
+var baseModelName = "unknown";
 function InfoForGeometry(geom) {
     var attributes = geom.attributes;
     if (!attributes)
@@ -326,6 +326,7 @@ function tryInterceptOGL() {
 console.log("OGL Injection: initializing events");
 document.addEventListener('DOMContentLoaded', function(e) {
 	console.log("OGL Injection: DOMContentLoaded event");
+	baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 	// source: http://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
 	var observeDOM = (function(){
 	    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
