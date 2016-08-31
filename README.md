@@ -13,6 +13,6 @@ If you have a userscript manager installed, clicking on [this link](https://gith
 
 Compatibility
 ---------------------
-Tested and working on Chrome + TamperMonkey and Opera + ViolentMonkey.  
+Works ONLY on Firefox + Greasemonkey.  
 
 
