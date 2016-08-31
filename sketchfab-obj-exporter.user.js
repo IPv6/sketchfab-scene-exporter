@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.21
+// @name           sketchfab-obj-exporter-1.22
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.21
+// @version        1.22
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -352,7 +352,7 @@ function addOSGIntercept() {
 	(function () {
 	    var scriptElement = document.createElement( "script" );
 	    scriptElement.type = "text/javascript";
-	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-2.js";
+	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-22.js";
 	    document.body.appendChild( scriptElement );
 	})();
 }
