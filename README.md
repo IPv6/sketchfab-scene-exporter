@@ -9,7 +9,7 @@ A download button will appear inside the scene viewer (as shown in the image bel
   
 Installation
 ---------------------
-If you have a userscript manager installed, loading https://github.com/IPv6/sketchfab-scene-exporter/raw/master/sketchfab-exporter-1.38.user.js should bring up a prompt to install the script. 
+If you have a userscript manager installed, loading https://github.com/IPv6/sketchfab-scene-exporter/raw/master/sketchfab-exporter-???.user.js should bring up a prompt to install the script. 
 
 Compatibility
 ---------------------
