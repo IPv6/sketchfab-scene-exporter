@@ -252,7 +252,7 @@ function getElementByXpath(path) {
 }
 
 var addedDownloadButton = false;
-var downloadButtonParentXPath = "//div[@class='controls']";
+var downloadButtonParentXPath = "//div[@class='stats']";
 var osgScriptElementPath = "//script[contains (@src, 'sketchfab')]";
 var foundOsgScript = false;
 
