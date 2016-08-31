@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           sketchfab-scene-exporter
+// @name           sketchfab-obj-exporter-1.10
 // @description    lets you export Sketchfab scenes
 // @author         Reinitialized
 //
