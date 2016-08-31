@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.18
+// @name           sketchfab-obj-exporter-1.19
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.18
+// @version        1.19
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -254,6 +254,13 @@ var observeDOM = (function(){
     }
 })();
 
+function interceptOGL() {
+	if(!overrideDrawImplementation()){
+		setTimeout(function () {
+        		interceptOGL();
+        	}, 1);
+	}
+}
 
 // source: http://stackoverflow.com/questions/10596417/is-there-a-way-to-get-element-by-xpath-in-javascript
 function getElementByXpath(path) {
@@ -262,24 +269,15 @@ function getElementByXpath(path) {
 
 var addedDownloadButton = false;
 var downloadButtonParentXPath = "//div[@class='titlebar']";
-//var osgScriptElementPath = "//script[contains (@src, 'cloudfront')]";
-var foundOsgScript = false;
-
 observeDOM(document.body, function(){ 
     if (!addedDownloadButton) {
-	    if (!foundOsgScript) {
-	    	//if (osgScript = getElementByXpath(osgScriptElementPath)) { 
-	        if(overrideDrawImplementation()){
-	       		foundOsgScript = true;
-	        }
-	    	//}
-	    }
         if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
         {
-            setTimeout(function () {
-                addDownloadButton(downloadButtonParent);
-            }, 2000);
-	   addedDownloadButton = true;
+		interceptOGL();
+        	setTimeout(function () {
+        		addDownloadButton(downloadButtonParent);
+        	}, 2000);
+		addedDownloadButton = true;
         }
     }
 });
