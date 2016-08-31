@@ -245,9 +245,9 @@ function downloadFileAtURL(fileURL, fileName) {
     if (!imagesDownloaded[fileURL]) {
         imagesDownloaded[fileURL] = true;
 	    var hyperlink = document.createElement('a');
-	    hyperlink.href = fileUrl;
+	    hyperlink.href = fileURL;
 	    hyperlink.target = '_blank';
-	    hyperlink.download = fileName || fileUrl;
+	    hyperlink.download = fileName || fileURL;
 	
 	    (document.body || document.documentElement).appendChild(hyperlink);
 	    hyperlink.onclick = function() {
