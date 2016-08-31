@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.35
+// @version        1.36
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -309,9 +309,11 @@ function overrideDrawImplementation() {
 	}
 }
 
-function stealOSG(k){
+window.stealOSG = function(k){
 	console.log("OGL Injection: osg intercept");
-	if(k.osg){window.OSG = k.osg;};
+	if(k.osg){
+		window.OSG = k.osg;
+	};
 };
 
 function tryInterceptOGL() {
@@ -379,13 +381,13 @@ window.addEventListener('beforescriptexecute', function(e) {
 		console.log("OGL Injection: legacy viewer loaded");
 		var viewertext = xhrObj.responseText;
 		// patching code for n r s a h p u
-		viewertext = patchStr(viewertext, "n.osg,", "n.osg,zzz=stealOSG(n),");
-		viewertext = patchStr(viewertext, "r.osg,", "r.osg,zzz=stealOSG(r),");
-		viewertext = patchStr(viewertext, "s.osg,", "s.osg,zzz=stealOSG(s),");
-		viewertext = patchStr(viewertext, "a.osg,", "a.osg,zzz=stealOSG(a),");
-		viewertext = patchStr(viewertext, "h.osg,", "h.osg,zzz=stealOSG(h),");
-		viewertext = patchStr(viewertext, "p.osg,", "p.osg,zzz=stealOSG(p),");
-		viewertext = patchStr(viewertext, "u.osg,", "u.osg,zzz=stealOSG(u),");
+		viewertext = patchStr(viewertext, "n.osg,", "n.osg,zzz=window.stealOSG(n),");
+		viewertext = patchStr(viewertext, "r.osg,", "r.osg,zzz=window.stealOSG(r),");
+		viewertext = patchStr(viewertext, "s.osg,", "s.osg,zzz=window.stealOSG(s),");
+		viewertext = patchStr(viewertext, "a.osg,", "a.osg,zzz=window.stealOSG(a),");
+		viewertext = patchStr(viewertext, "h.osg,", "h.osg,zzz=window.stealOSG(h),");
+		viewertext = patchStr(viewertext, "p.osg,", "p.osg,zzz=window.stealOSG(p),");
+		viewertext = patchStr(viewertext, "u.osg,", "u.osg,zzz=window.stealOSG(u),");
 		console.log("OGL Injection: legacy viewer patched");
 		var se = document.createElement('script');
 		se.type = "text/javascript";
