@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.23
+// @name           sketchfab-obj-exporter-1.24
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.23
+// @version        1.24
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -265,7 +265,7 @@ observeDOM(document.body, function(){
     if (!addedDownloadButton) {
         if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
         {
-		addOSGIntercept();
+		//addOSGIntercept();
         	setTimeout(function () {
         		addDownloadButton(downloadButtonParent);
         	}, 2000);
@@ -338,7 +338,7 @@ function downloadModels() {
     downloadString(baseModelName, 'mtl', combinedMTL);
 }
 
-function interceptOGL() {
+function tryInterceptOGL() {
 	if(!overrideDrawImplementation()){
 		setTimeout(function () {
         		interceptOGL();
@@ -348,13 +348,24 @@ function interceptOGL() {
 
 function addOSGIntercept() {
 	console.log("Injecting OGL Draw overlay");
-	interceptOGL();
+	tryInterceptOGL();
 	(function () {
 	    var scriptElement = document.createElement( "script" );
 	    scriptElement.type = "text/javascript";
 	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-23.js";
 	    document.body.appendChild( scriptElement );
 	})();
+}
+
+window.addEventListener('beforescriptexecute', function(e) {
+	var src = e.target.src;
+	console.log("New script is about to execute... "+src);
+	if (src.indexOf("viewer") >= 0) {
+                changed++;
+		e.preventDefault();
+		e.stopPropagation();
+		addOSGIntercept();
+	};
 }
 
 function addDownloadButton(downloadButtonParent) {
