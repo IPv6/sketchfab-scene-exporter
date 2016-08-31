@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.20
+// @name           sketchfab-obj-exporter-1.21
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.20
+// @version        1.21
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -23,7 +23,7 @@ var models = [];
 var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 function overrideDrawImplementation() {
 	try{
-	console.log("Injecting OGL Draw overlay");
+	    //console.log("Injecting OGL Draw overlay");
 	    var geometry = OSG.osg.Geometry;
 	    var newPrototype = unfreeze(geometry.prototype);
 	    geometry.prototype = newPrototype;
@@ -55,7 +55,7 @@ function overrideDrawImplementation() {
 	    console.log("Injecting OGL Draw overlay: OK! ");
 	    return true;
 	}catch(e){
-		console.log("Injecting OGL Draw overlay: failed "+e);
+		//console.log("Injecting OGL Draw overlay: failed "+e);
 		return false;
 	}
 }
@@ -347,11 +347,12 @@ function interceptOGL() {
 }
 
 function addOSGIntercept() {
+	console.log("Injecting OGL Draw overlay");
 	interceptOGL();
 	(function () {
 	    var scriptElement = document.createElement( "script" );
 	    scriptElement.type = "text/javascript";
-	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked.js";
+	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-2.js";
 	    document.body.appendChild( scriptElement );
 	})();
 }
