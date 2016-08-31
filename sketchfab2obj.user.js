@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter
+// @name           sketchfab2obj
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
