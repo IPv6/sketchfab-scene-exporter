@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.38
+// @version        1.39
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -36,8 +36,10 @@ function getElementByXpath(path) {
 
 ////////////////////// OBJ STUFF /////////////////////////////////////////////////////////////////////////
 var models = [];
+window._OSL_models = models;
 var baseModelName = "unknown";
 function InfoForGeometry(geom) {
+    console.log(["InfoForGeometry",geom]);
     var attributes = geom.attributes;
     if (!attributes)
         throw "No attributes for geometry";
@@ -157,10 +159,12 @@ function ext(str) {
 }
 
 function textureInfoForGeometry(geom) {
+    console.log(["textureInfoForGeometry",geom]);
     var textureMap = [];
     if (stateset = geom.stateset) {
         if (textures = stateset.textureAttributeMapList) {
             textures.forEach(function(texture) {
+            	console.log(["textureInfoForGeometry texture",texture]);
                 if (Texture = texture.Texture) {
                     if (object = Texture._object) {
                         if (texture = object._texture) {
@@ -180,7 +184,8 @@ function textureInfoForGeometry(geom) {
             });
         }
     }
-	return textureMap;
+    console.log(["textureInfoForGeometry textureMap",textureMap]);
+    return textureMap;
 }
 
 function textureFilename(geom, texture) {
