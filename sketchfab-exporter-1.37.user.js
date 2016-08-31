@@ -4,15 +4,13 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.36
+// @version        1.37
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
 // @run-at         document-start
 // @grant none
 // ==/UserScript==
-
-var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 
 // source: http://stackoverflow.com/a/8485137
 function safeName(s) {
@@ -38,6 +36,7 @@ function getElementByXpath(path) {
 
 ////////////////////// OBJ STUFF /////////////////////////////////////////////////////////////////////////
 var models = [];
+var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 function InfoForGeometry(geom) {
     var attributes = geom.attributes;
     if (!attributes)
@@ -278,7 +277,7 @@ function overrideDrawImplementation() {
 	    geometry.prototype = newPrototype;
 	    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
 	    newPrototype.drawImplementation = function(a) {
-	    	console.log("Injecting OGL Draw overlay: invoking");
+	    	console.log("OGL Injection: invoking drawImplementation, saving model");
 	        this.originalDrawImplementation(a);
 	        if (!this.computedOBJ) {
 	            this.computedOBJ = true;
@@ -310,7 +309,7 @@ function overrideDrawImplementation() {
 }
 
 window.stealOSG = function(k){
-	console.log("OGL Injection: osg intercept");
+	//console.log("OGL Injection: osg intercept");
 	if(k.osg){
 		window.OSG = k.osg;
 	};
