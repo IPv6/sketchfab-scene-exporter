@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.31
+// @name           sketchfab-obj-exporter-1.32
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.31
+// @version        1.32
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -321,18 +321,30 @@ window.addEventListener('beforescriptexecute', function(e) {
 		return;
 	}
 	console.log("OGL Injection: beforescriptexecute event: "+src);
-	if (src.indexOf("web/dist/commons") >= 0) {
+	/*if (src.indexOf("web/dist/commons") >= 0) {
 		console.log("OGL Injection: mixing in hijacked viewer from "+viewer_src);
 		var scriptElement = document.createElement( "script" );
 		scriptElement.type = "text/javascript";
 		scriptElement.src = viewer_src;
 		document.head.appendChild( scriptElement );
 		tryInterceptOGL();
-	};
+	};*/
 	if (src.indexOf("web/dist/viewer") >= 0) {
 		e.preventDefault();
 		e.stopPropagation();
-		console.log("OGL Injection: legacy viewer blocked");
+		console.log("OGL Injection: legacy viewer loading...");
+		// get some kind of XMLHttpRequest
+		var xhrObj = createXMLHTTPObject();
+		// open and send a synchronous request
+		xhrObj.open('GET', src, false);
+		xhrObj.send('');
+		// add the returned content to a newly created script tag
+		var se = document.createElement('script');
+		se.type = "text/javascript";
+		se.text = xhrObj.responseText;
+		document.getElementsByTagName('head')[0].appendChild(se);
+		console.log("OGL Injection: legacy viewer loaded");
+		
 	};
 }, true);
 
