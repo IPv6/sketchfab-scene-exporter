@@ -4,7 +4,7 @@
 // @author         Reinitialized
 //
 //Version Number
-// @version        1.09
+// @version        1.10
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
