@@ -13,6 +13,6 @@ If you have a userscript manager installed, clicking on [this link](https://gith
 
 Compatibility
 ---------------------
-Works ONLY on Firefox + Greasemonkey.  
+Works ONLY on Firefox + Greasemonkey. Due use of XMLHttpRequests, script installed in DISABLED state (you have to enable it manually after installation)
 
 
