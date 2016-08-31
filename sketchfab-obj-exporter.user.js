@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.19
+// @name           sketchfab-obj-exporter-1.20
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.19
+// @version        1.20
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -254,14 +254,6 @@ var observeDOM = (function(){
     }
 })();
 
-function interceptOGL() {
-	if(!overrideDrawImplementation()){
-		setTimeout(function () {
-        		interceptOGL();
-        	}, 1);
-	}
-}
-
 // source: http://stackoverflow.com/questions/10596417/is-there-a-way-to-get-element-by-xpath-in-javascript
 function getElementByXpath(path) {
     return document.evaluate(path, document, null, 9, null).singleNodeValue;
@@ -273,7 +265,7 @@ observeDOM(document.body, function(){
     if (!addedDownloadButton) {
         if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
         {
-		interceptOGL();
+		addOSGIntercept();
         	setTimeout(function () {
         		addDownloadButton(downloadButtonParent);
         	}, 2000);
@@ -344,6 +336,24 @@ function downloadModels() {
     });
     downloadString(baseModelName, 'obj', combinedOBJ);
     downloadString(baseModelName, 'mtl', combinedMTL);
+}
+
+function interceptOGL() {
+	if(!overrideDrawImplementation()){
+		setTimeout(function () {
+        		interceptOGL();
+        	}, 1);
+	}
+}
+
+function addOSGIntercept() {
+	interceptOGL();
+	(function () {
+	    var scriptElement = document.createElement( "script" );
+	    scriptElement.type = "text/javascript";
+	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked.js";
+	    document.body.appendChild( scriptElement );
+	})();
 }
 
 function addDownloadButton(downloadButtonParent) {
