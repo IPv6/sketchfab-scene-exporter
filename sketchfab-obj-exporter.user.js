@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.22
+// @name           sketchfab-obj-exporter-1.23
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.22
+// @version        1.23
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -24,7 +24,7 @@ var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 function overrideDrawImplementation() {
 	try{
 	    //console.log("Injecting OGL Draw overlay");
-	    var geometry = OSG.osg.Geometry;
+	    var geometry = window.OSG.Geometry;
 	    var newPrototype = unfreeze(geometry.prototype);
 	    geometry.prototype = newPrototype;
 	    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
@@ -352,7 +352,7 @@ function addOSGIntercept() {
 	(function () {
 	    var scriptElement = document.createElement( "script" );
 	    scriptElement.type = "text/javascript";
-	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-22.js";
+	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-23.js";
 	    document.body.appendChild( scriptElement );
 	})();
 }
