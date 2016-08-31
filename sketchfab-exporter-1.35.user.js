@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.34
+// @version        1.35
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -12,13 +12,16 @@
 // @grant none
 // ==/UserScript==
 
-var viewer_src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-31.js";
 var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 
 // source: http://stackoverflow.com/a/8485137
 function safeName(s) {
     return s.replace(/[^a-zA-Z0-9]/gi, '_').toLowerCase();
 }
+
+function patchStr(target, search, replacement) {
+    return target.split(search).join(replacement);
+};
 
 function unfreeze(obj) {
     var copy = {};
@@ -306,6 +309,11 @@ function overrideDrawImplementation() {
 	}
 }
 
+function stealOSG(k){
+	console.log("OGL Injection: osg intercept");
+	if(k.osg){window.OSG = k.osg;};
+};
+
 function tryInterceptOGL() {
 	if(!overrideDrawImplementation()){
 		setTimeout(function () {
@@ -361,35 +369,29 @@ window.addEventListener('beforescriptexecute', function(e) {
 		return;
 	}
 	console.log("OGL Injection: beforescriptexecute event: "+src);
-	/*if (src.indexOf("web/dist/commons") >= 0) {
-		console.log("OGL Injection: mixing in hijacked viewer from "+viewer_src);
-		var scriptElement = document.createElement( "script" );
-		scriptElement.type = "text/javascript";
-		scriptElement.src = viewer_src;
-		document.head.appendChild( scriptElement );
-		tryInterceptOGL();
-	};*/
 	if (src.indexOf("web/dist/viewer") >= 0) {
 		e.preventDefault();
 		e.stopPropagation();
-		console.log("OGL Injection: legacy viewer loading... 1");
 		var xhrObj = new XMLHttpRequest();
-		console.log("OGL Injection: legacy viewer loading... 2");
 		// open and send a synchronous request
 		xhrObj.open('GET', src, false);
-		console.log("OGL Injection: legacy viewer loading... 3");
 		xhrObj.send('');
-		console.log("OGL Injection: legacy viewer loading... 4");
-		// add the returned content to a newly created script tag
-		var se = document.createElement('script');
-		console.log("OGL Injection: legacy viewer loading... 5");
-		se.type = "text/javascript";
-		console.log("OGL Injection: legacy viewer loading... 6");
-		se.text = xhrObj.responseText;
-		console.log("OGL Injection: legacy viewer loading... 7");
-		document.getElementsByTagName('head')[0].appendChild(se);
-		console.log("OGL Injection: legacy viewer loading... 8");
 		console.log("OGL Injection: legacy viewer loaded");
+		var viewertext = xhrObj.responseText;
+		// patching code for n r s a h p u
+		viewertext = patchStr(viewertext, "n.osg,", "n.osg,zzz=stealOSG(n),");
+		viewertext = patchStr(viewertext, "r.osg,", "r.osg,zzz=stealOSG(r),");
+		viewertext = patchStr(viewertext, "s.osg,", "s.osg,zzz=stealOSG(s),");
+		viewertext = patchStr(viewertext, "a.osg,", "a.osg,zzz=stealOSG(a),");
+		viewertext = patchStr(viewertext, "h.osg,", "h.osg,zzz=stealOSG(h),");
+		viewertext = patchStr(viewertext, "p.osg,", "p.osg,zzz=stealOSG(p),");
+		viewertext = patchStr(viewertext, "u.osg,", "u.osg,zzz=stealOSG(u),");
+		console.log("OGL Injection: legacy viewer patched");
+		var se = document.createElement('script');
+		se.type = "text/javascript";
+		se.text = viewertext;
+		document.getElementsByTagName('head')[0].appendChild(se);
+		tryInterceptOGL();
 		
 	};
 }, true);
