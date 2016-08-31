@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.39
+// @version        1.40
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -39,7 +39,7 @@ var models = [];
 window._OSL_models = models;
 var baseModelName = "unknown";
 function InfoForGeometry(geom) {
-    console.log(["InfoForGeometry",geom]);
+    //console.log(["InfoForGeometry",geom]);
     var attributes = geom.attributes;
     if (!attributes)
         throw "No attributes for geometry";
@@ -159,12 +159,12 @@ function ext(str) {
 }
 
 function textureInfoForGeometry(geom) {
-    console.log(["textureInfoForGeometry",geom]);
+    //console.log(["textureInfoForGeometry",geom]);
     var textureMap = [];
     if (stateset = geom.stateset) {
         if (textures = stateset.textureAttributeMapList) {
             textures.forEach(function(texture) {
-            	console.log(["textureInfoForGeometry texture",texture]);
+            	//console.log(["textureInfoForGeometry texture",texture]);
                 if (Texture = texture.Texture) {
                     if (object = Texture._object) {
                         if (texture = object._texture) {
@@ -252,7 +252,7 @@ function downloadFileAtURL(fileURL) {
         event.initEvent('click', true, true);
         save.dispatchEvent(event);
         (window.URL || window.webkitURL).revokeObjectURL(save.href);
-	}
+    }
 }
 
 function downloadModels() {
@@ -263,9 +263,11 @@ function downloadModels() {
     var combinedOBJ = '';
     var combinedMTL = '';
     models.forEach(function(model) {
+    	console.log(["downloadModels",model]);
         combinedOBJ += model.obj + nl;
         combinedMTL += model.mtl + nl;
         model.textures.forEach(function(texture) {
+        	console.log(["downloadModels downloadFileAtURL",texture]);
         	downloadFileAtURL(texture.url);
         });
     });
