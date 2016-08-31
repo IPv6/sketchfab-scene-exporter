@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.25
+// @name           sketchfab-obj-exporter-1.26
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.25
+// @version        1.26
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -367,7 +367,7 @@ window.addEventListener('beforescriptexecute', function(e) {
 		e.stopPropagation();
 		addOSGIntercept();
 	};
-}
+}, true);
 
 function addDownloadButton(downloadButtonParent) {
     var downloadButton = document.createElement("a");
