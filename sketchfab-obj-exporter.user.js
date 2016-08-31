@@ -49,6 +49,7 @@ function overrideDrawImplementation() {
             });
         }
     };
+    return true;
 }
 
 // source: http://stackoverflow.com/a/8485137
@@ -259,8 +260,9 @@ var foundOsgScript = false;
 observeDOM(document.body, function(){ 
     if (!foundOsgScript) {
     	if (osgScript = getElementByXpath(osgScriptElementPath)) { 
-           overrideDrawImplementation();
-           foundOsgScript = true;
+           if(overrideDrawImplementation()){
+           	foundOsgScript = true;
+           }
     	}
     }
     if (!addedDownloadButton) {
