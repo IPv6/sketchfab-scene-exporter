@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.32
+// @name           sketchfab-obj-exporter-1.33
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.32
+// @version        1.33
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -335,14 +335,21 @@ window.addEventListener('beforescriptexecute', function(e) {
 		console.log("OGL Injection: legacy viewer loading...");
 		// get some kind of XMLHttpRequest
 		var xhrObj = createXMLHTTPObject();
+		console.log("OGL Injection: legacy viewer loading... 2");
 		// open and send a synchronous request
 		xhrObj.open('GET', src, false);
+		console.log("OGL Injection: legacy viewer loading... 3");
 		xhrObj.send('');
+		console.log("OGL Injection: legacy viewer loading... 4");
 		// add the returned content to a newly created script tag
 		var se = document.createElement('script');
+		console.log("OGL Injection: legacy viewer loading... 5");
 		se.type = "text/javascript";
+		console.log("OGL Injection: legacy viewer loading... 6");
 		se.text = xhrObj.responseText;
+		console.log("OGL Injection: legacy viewer loading... 7");
 		document.getElementsByTagName('head')[0].appendChild(se);
+		console.log("OGL Injection: legacy viewer loading... 8");
 		console.log("OGL Injection: legacy viewer loaded");
 		
 	};
