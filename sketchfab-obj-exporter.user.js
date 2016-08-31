@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.29
+// @name           sketchfab-obj-exporter-1.30
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.29
+// @version        1.30
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -307,20 +307,9 @@ function overrideDrawImplementation() {
 function tryInterceptOGL() {
 	if(!overrideDrawImplementation()){
 		setTimeout(function () {
-        		interceptOGL();
+        		tryInterceptOGL();
         	}, 1);
 	}
-}
-
-function addOSGIntercept() {
-	console.log("OGL Injection: replacing viewer");
-	tryInterceptOGL();
-	(function () {
-	    var scriptElement = document.createElement( "script" );
-	    scriptElement.type = "text/javascript";
-	    scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-29.js";
-	    document.body.appendChild( scriptElement );
-	})();
 }
 
 console.log("OGL Injection: initializing events");
@@ -330,10 +319,18 @@ window.addEventListener('beforescriptexecute', function(e) {
 		return;
 	}
 	console.log("OGL Injection: beforescriptexecute event: "+src);
+	if (src.indexOf("web/dist/commons") >= 0) {
+		console.log("OGL Injection: mixing in hijacked viewer");
+		var scriptElement = document.createElement( "script" );
+		scriptElement.type = "text/javascript";
+		scriptElement.src = "https://raw.githubusercontent.com/IPv6/sketchfab-scene-exporter/master/viewer-hjacked-29.js";
+		document.body.appendChild( scriptElement );
+		tryInterceptOGL();
+	};
 	if (src.indexOf("web/dist/viewer") >= 0) {
 		e.preventDefault();
 		e.stopPropagation();
-		addOSGIntercept();
+		console.log("OGL Injection: legacy viewer blocked");
 	};
 }, true);
 
