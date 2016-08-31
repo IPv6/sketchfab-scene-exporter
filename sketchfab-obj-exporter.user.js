@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.26
+// @name           sketchfab-obj-exporter-1.27
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.26
+// @version        1.27
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -22,44 +22,6 @@ function unfreeze(obj) {
 
 var models = [];
 var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
-function overrideDrawImplementation() {
-	try{
-	    //console.log("Injecting OGL Draw overlay");
-	    var geometry = window.OSG.Geometry;
-	    var newPrototype = unfreeze(geometry.prototype);
-	    geometry.prototype = newPrototype;
-	    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
-	    newPrototype.drawImplementation = function(a) {
-	    	console.log("Injecting OGL Draw overlay: invoking");
-	        this.originalDrawImplementation(a);
-	        if (!this.computedOBJ) {
-	            this.computedOBJ = true;
-	            this.name = baseModelName + '-' + models.length;
-	            this.__defineGetter__("textures", function() {
-	                return this._textures ? this._textures : this._textures = textureInfoForGeometry(this);
-	            });
-	            models.push({
-	                name: this.name,
-	                geom: this,
-	                get obj() {
-	                    return OBJforGeometry(this.geom);
-	                },
-	                get mtl() {
-	                    return MTLforGeometry(this.geom);
-	                },
-	                get textures() {
-	                    return this.geom.textures;
-	                }
-	            });
-	        }
-	    };
-	    console.log("Injecting OGL Draw overlay: OK! ");
-	    return true;
-	}catch(e){
-		//console.log("Injecting OGL Draw overlay: failed "+e);
-		return false;
-	}
-}
 
 // source: http://stackoverflow.com/a/8485137
 function safeName(s) {
@@ -233,48 +195,6 @@ function MTLforGeometry(geom) {
     return mtl;
 }
 
-// source: http://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
-var observeDOM = (function(){
-    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
-        eventListenerSupported = window.addEventListener;
-
-    return function(obj, callback){
-        if( MutationObserver ){
-            // define a new observer
-            var obs = new MutationObserver(function(mutations, observer){
-                if( mutations[0].addedNodes.length || mutations[0].removedNodes.length )
-                    callback();
-            });
-            // have the observer observe foo for changes in children
-            obs.observe( obj, { childList:true, subtree:true });
-        }
-        else if( eventListenerSupported ){
-            obj.addEventListener('DOMNodeInserted', callback, false);
-            obj.addEventListener('DOMNodeRemoved', callback, false);
-        }
-    }
-})();
-
-// source: http://stackoverflow.com/questions/10596417/is-there-a-way-to-get-element-by-xpath-in-javascript
-function getElementByXpath(path) {
-    return document.evaluate(path, document, null, 9, null).singleNodeValue;
-}
-
-var addedDownloadButton = false;
-var downloadButtonParentXPath = "//div[@class='titlebar']";
-observeDOM(document.body, function(){ 
-    if (!addedDownloadButton) {
-        if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
-        {
-		//addOSGIntercept();
-        	setTimeout(function () {
-        		addDownloadButton(downloadButtonParent);
-        	}, 2000);
-		addedDownloadButton = true;
-        }
-    }
-});
-
 // source: http://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
 function downloadString(filename, ext, str) {
     function destroyClickedElement(event)
@@ -339,6 +259,51 @@ function downloadModels() {
     downloadString(baseModelName, 'mtl', combinedMTL);
 }
 
+///////////////////////// HELPERS /////////////////////////////////////////////////////////////////////////
+// source: http://stackoverflow.com/questions/10596417/is-there-a-way-to-get-element-by-xpath-in-javascript
+function getElementByXpath(path) {
+    return document.evaluate(path, document, null, 9, null).singleNodeValue;
+}
+
+function overrideDrawImplementation() {
+	try{
+	    //console.log("Injecting OGL Draw overlay");
+	    var geometry = window.OSG.Geometry;
+	    var newPrototype = unfreeze(geometry.prototype);
+	    geometry.prototype = newPrototype;
+	    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
+	    newPrototype.drawImplementation = function(a) {
+	    	console.log("Injecting OGL Draw overlay: invoking");
+	        this.originalDrawImplementation(a);
+	        if (!this.computedOBJ) {
+	            this.computedOBJ = true;
+	            this.name = baseModelName + '-' + models.length;
+	            this.__defineGetter__("textures", function() {
+	                return this._textures ? this._textures : this._textures = textureInfoForGeometry(this);
+	            });
+	            models.push({
+	                name: this.name,
+	                geom: this,
+	                get obj() {
+	                    return OBJforGeometry(this.geom);
+	                },
+	                get mtl() {
+	                    return MTLforGeometry(this.geom);
+	                },
+	                get textures() {
+	                    return this.geom.textures;
+	                }
+	            });
+	        }
+	    };
+	    console.log("Injecting OGL Draw overlay: OK! ");
+	    return true;
+	}catch(e){
+		//console.log("Injecting OGL Draw overlay: failed "+e);
+		return false;
+	}
+}
+
 function tryInterceptOGL() {
 	if(!overrideDrawImplementation()){
 		setTimeout(function () {
@@ -358,9 +323,11 @@ function addOSGIntercept() {
 	})();
 }
 
+console.log("Injecting OGL: initializing events");
 window.addEventListener('beforescriptexecute', function(e) {
+	console.log("Injecting OGL: beforescriptexecute event");
 	var src = e.target.src;
-	console.log("New script is about to execute... "+src);
+	console.log("Injecting OGL: script: "+src);
 	if (src.indexOf("viewer") >= 0) {
                 changed++;
 		e.preventDefault();
@@ -368,6 +335,47 @@ window.addEventListener('beforescriptexecute', function(e) {
 		addOSGIntercept();
 	};
 }, true);
+
+document.addEventListener('DOMContentLoaded', function(e) {
+	console.log("Injecting OGL: DOMContentLoaded event");
+	// source: http://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
+	var observeDOM = (function(){
+	    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+	        eventListenerSupported = window.addEventListener;
+	
+	    return function(obj, callback){
+	        if( MutationObserver ){
+	            // define a new observer
+	            var obs = new MutationObserver(function(mutations, observer){
+	                if( mutations[0].addedNodes.length || mutations[0].removedNodes.length )
+	                    callback();
+	            });
+	            // have the observer observe foo for changes in children
+	            obs.observe( obj, { childList:true, subtree:true });
+	        }
+	        else if( eventListenerSupported ){
+	            obj.addEventListener('DOMNodeInserted', callback, false);
+	            obj.addEventListener('DOMNodeRemoved', callback, false);
+	        }
+	    }
+	})();
+
+	var addedDownloadButton = false;
+	var downloadButtonParentXPath = "//div[@class='titlebar']";
+	observeDOM(document.body, function(){ 
+	    if (!addedDownloadButton) {
+	        if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
+	        {
+			//addOSGIntercept();
+	        	setTimeout(function () {
+	        		addDownloadButton(downloadButtonParent);
+	        	}, 2000);
+			addedDownloadButton = true;
+	        }
+	    }
+	});
+}, true);
+console.log("Injecting OGL: events initialized");
 
 function addDownloadButton(downloadButtonParent) {
     var downloadButton = document.createElement("a");
