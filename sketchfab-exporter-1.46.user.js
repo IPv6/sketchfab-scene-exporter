@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.44
+// @version        1.46
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -170,9 +170,13 @@ function textureInfoForGeometry(geom) {
                         if (texture = object._texture) {
                             if (imageProxy = texture._imageProxy) {
                                 var textureURL = imageProxy.attributes.images[0].url;
+                                var mtlmap = textureMTLMap[object._channelName];
+                                if(!mtlmap){
+                                	mtlmap = object._channelName;
+                                }
                                 var texture = {
                                     url: textureURL,
-                                    type: textureMTLMap[object._channelName],
+                                    type: mtlmap,
                                     ext: ext(textureURL)
                                 };
                                 texture.filename = textureFilename(geom, texture);
