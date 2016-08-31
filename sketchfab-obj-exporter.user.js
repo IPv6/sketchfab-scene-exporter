@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.15
+// @name           sketchfab-obj-exporter-1.16
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.15
+// @version        1.16
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -261,9 +261,9 @@ observeDOM(document.body, function(){
     if (!addedDownloadButton) {
 	    if (!foundOsgScript) {
 	    	//if (osgScript = getElementByXpath(osgScriptElementPath)) { 
-	        if(overrideDrawImplementation()){
-	       		foundOsgScript = true;
-	        }
+	        //if(overrideDrawImplementation()){
+	       	//	foundOsgScript = true;
+	        //}
 	    	//}
 	    }
         if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
