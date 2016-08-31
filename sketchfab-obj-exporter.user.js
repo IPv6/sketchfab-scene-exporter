@@ -1,13 +1,14 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.24
+// @name           sketchfab-obj-exporter-1.25
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.24
+// @version        1.25
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
+// @run-at         document-start
 // @grant none
 // ==/UserScript==
 
