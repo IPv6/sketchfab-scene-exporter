@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.16
+// @name           sketchfab-obj-exporter-1.17
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.16
+// @version        1.17
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -22,34 +22,38 @@ function unfreeze(obj) {
 var models = [];
 var baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 function overrideDrawImplementation() {
-    var geometry = OSG.osg.Geometry;
-    var newPrototype = unfreeze(geometry.prototype);
-    geometry.prototype = newPrototype;
-    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
-    newPrototype.drawImplementation = function(a) {
-        this.originalDrawImplementation(a);
-        if (!this.computedOBJ) {
-            this.computedOBJ = true;
-            this.name = baseModelName + '-' + models.length;
-            this.__defineGetter__("textures", function() {
-                return this._textures ? this._textures : this._textures = textureInfoForGeometry(this);
-            });
-            models.push({
-                name: this.name,
-                geom: this,
-                get obj() {
-                    return OBJforGeometry(this.geom);
-                },
-                get mtl() {
-                    return MTLforGeometry(this.geom);
-                },
-                get textures() {
-                    return this.geom.textures;
-                }
-            });
-        }
-    };
-    return true;
+	try{
+	    var geometry = OSG.osg.Geometry;
+	    var newPrototype = unfreeze(geometry.prototype);
+	    geometry.prototype = newPrototype;
+	    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
+	    newPrototype.drawImplementation = function(a) {
+	        this.originalDrawImplementation(a);
+	        if (!this.computedOBJ) {
+	            this.computedOBJ = true;
+	            this.name = baseModelName + '-' + models.length;
+	            this.__defineGetter__("textures", function() {
+	                return this._textures ? this._textures : this._textures = textureInfoForGeometry(this);
+	            });
+	            models.push({
+	                name: this.name,
+	                geom: this,
+	                get obj() {
+	                    return OBJforGeometry(this.geom);
+	                },
+	                get mtl() {
+	                    return MTLforGeometry(this.geom);
+	                },
+	                get textures() {
+	                    return this.geom.textures;
+	                }
+	            });
+	        }
+	    };
+	    return true;
+	}catch(e){
+		return false;
+	}
 }
 
 // source: http://stackoverflow.com/a/8485137
@@ -261,9 +265,9 @@ observeDOM(document.body, function(){
     if (!addedDownloadButton) {
 	    if (!foundOsgScript) {
 	    	//if (osgScript = getElementByXpath(osgScriptElementPath)) { 
-	        //if(overrideDrawImplementation()){
-	       	//	foundOsgScript = true;
-	        //}
+	        if(overrideDrawImplementation()){
+	       		foundOsgScript = true;
+	        }
 	    	//}
 	    }
         if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
