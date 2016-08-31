@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.13
+// @name           sketchfab-obj-exporter-1.14
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.13
+// @version        1.14
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -259,11 +259,11 @@ var foundOsgScript = false;
 
 observeDOM(document.body, function(){ 
     if (!foundOsgScript) {
-    	if (osgScript = getElementByXpath(osgScriptElementPath)) { 
-           if(overrideDrawImplementation()){
-           	foundOsgScript = true;
-           }
-    	}
+    	//if (osgScript = getElementByXpath(osgScriptElementPath)) { 
+        if(overrideDrawImplementation()){
+       		foundOsgScript = true;
+        }
+    	//}
     }
     if (!addedDownloadButton) {
         if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
@@ -343,7 +343,7 @@ function downloadModels() {
 function addDownloadButton(downloadButtonParent) {
     var downloadButton = document.createElement("a");
     downloadButton.setAttribute("class", "control");
-    downloadButton.innerHTML = foundOsgScript?"<pre>OBJ-DOWNLOAD</pre>":"<pre>OBJ-FAIL</pre>";
+    downloadButton.innerHTML = "<pre>OBJ-DOWNLOAD</pre>";
     downloadButton.addEventListener("click", downloadModels , false);
     downloadButtonParent.appendChild(downloadButton);
 }
