@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.33
+// @version        1.34
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -315,46 +315,6 @@ function tryInterceptOGL() {
 }
 
 console.log("OGL Injection: initializing events");
-window.addEventListener('beforescriptexecute', function(e) {
-	var src = e.target.src;
-	if((""+src).length == 0){
-		return;
-	}
-	console.log("OGL Injection: beforescriptexecute event: "+src);
-	/*if (src.indexOf("web/dist/commons") >= 0) {
-		console.log("OGL Injection: mixing in hijacked viewer from "+viewer_src);
-		var scriptElement = document.createElement( "script" );
-		scriptElement.type = "text/javascript";
-		scriptElement.src = viewer_src;
-		document.head.appendChild( scriptElement );
-		tryInterceptOGL();
-	};*/
-	if (src.indexOf("web/dist/viewer") >= 0) {
-		e.preventDefault();
-		e.stopPropagation();
-		console.log("OGL Injection: legacy viewer loading...");
-		// get some kind of XMLHttpRequest
-		var xhrObj = createXMLHTTPObject();
-		console.log("OGL Injection: legacy viewer loading... 2");
-		// open and send a synchronous request
-		xhrObj.open('GET', src, false);
-		console.log("OGL Injection: legacy viewer loading... 3");
-		xhrObj.send('');
-		console.log("OGL Injection: legacy viewer loading... 4");
-		// add the returned content to a newly created script tag
-		var se = document.createElement('script');
-		console.log("OGL Injection: legacy viewer loading... 5");
-		se.type = "text/javascript";
-		console.log("OGL Injection: legacy viewer loading... 6");
-		se.text = xhrObj.responseText;
-		console.log("OGL Injection: legacy viewer loading... 7");
-		document.getElementsByTagName('head')[0].appendChild(se);
-		console.log("OGL Injection: legacy viewer loading... 8");
-		console.log("OGL Injection: legacy viewer loaded");
-		
-	};
-}, true);
-
 document.addEventListener('DOMContentLoaded', function(e) {
 	console.log("OGL Injection: DOMContentLoaded event");
 	// source: http://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
@@ -393,6 +353,45 @@ document.addEventListener('DOMContentLoaded', function(e) {
 	        }
 	    }
 	});
+}, true);
+
+window.addEventListener('beforescriptexecute', function(e) {
+	var src = e.target.src;
+	if((""+src).length == 0){
+		return;
+	}
+	console.log("OGL Injection: beforescriptexecute event: "+src);
+	/*if (src.indexOf("web/dist/commons") >= 0) {
+		console.log("OGL Injection: mixing in hijacked viewer from "+viewer_src);
+		var scriptElement = document.createElement( "script" );
+		scriptElement.type = "text/javascript";
+		scriptElement.src = viewer_src;
+		document.head.appendChild( scriptElement );
+		tryInterceptOGL();
+	};*/
+	if (src.indexOf("web/dist/viewer") >= 0) {
+		e.preventDefault();
+		e.stopPropagation();
+		console.log("OGL Injection: legacy viewer loading... 1");
+		var xhrObj = new XMLHttpRequest();
+		console.log("OGL Injection: legacy viewer loading... 2");
+		// open and send a synchronous request
+		xhrObj.open('GET', src, false);
+		console.log("OGL Injection: legacy viewer loading... 3");
+		xhrObj.send('');
+		console.log("OGL Injection: legacy viewer loading... 4");
+		// add the returned content to a newly created script tag
+		var se = document.createElement('script');
+		console.log("OGL Injection: legacy viewer loading... 5");
+		se.type = "text/javascript";
+		console.log("OGL Injection: legacy viewer loading... 6");
+		se.text = xhrObj.responseText;
+		console.log("OGL Injection: legacy viewer loading... 7");
+		document.getElementsByTagName('head')[0].appendChild(se);
+		console.log("OGL Injection: legacy viewer loading... 8");
+		console.log("OGL Injection: legacy viewer loaded");
+		
+	};
 }, true);
 console.log("OGL Injection: events initialized");
 
