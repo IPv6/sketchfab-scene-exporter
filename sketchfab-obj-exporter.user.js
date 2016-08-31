@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.12
-// @description    lets you export Sketchfab scenes
-// @author         Reinitialized
+// @name           sketchfab-obj-exporter-1.13
+// @description    Save Sketchfab models as obj
+// @author         <anonimus>
 //
 //Version Number
-// @version        1.12
+// @version        1.13
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -253,7 +253,7 @@ function getElementByXpath(path) {
 
 var addedDownloadButton = false;
 var downloadButtonParentXPath = "//div[@class='titlebar']";
-var osgScriptElementPath = "//script[contains (@src, 'sketchfab')]";
+var osgScriptElementPath = "//script[contains (@src, 'cloudfront')]";
 var foundOsgScript = false;
 
 observeDOM(document.body, function(){ 
