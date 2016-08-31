@@ -244,19 +244,23 @@ var imagesDownloaded = {};
 function downloadFileAtURL(fileURL, fileName) {
     if (!imagesDownloaded[fileURL]) {
         imagesDownloaded[fileURL] = true;
-        var reader = new FileReader();
-	reader.readAsDataURL(fileURL);
-	reader.onload = function (event) {
-        var save = document.createElement('a');
-        save.href = event.target.result;
-        save.target = '_blank';
-        save.download = fileName || 'unknown file';
-
-        var event = document.createEvent('Event');
-        event.initEvent('click', true, true);
-        save.dispatchEvent(event);
-        (window.URL || window.webkitURL).revokeObjectURL(save.href);
-    };
+	    var hyperlink = document.createElement('a');
+	    hyperlink.href = fileUrl;
+	    hyperlink.target = '_blank';
+	    hyperlink.download = fileName || fileUrl;
+	
+	    (document.body || document.documentElement).appendChild(hyperlink);
+	    hyperlink.onclick = function() {
+	       (document.body || document.documentElement).removeChild(hyperlink);
+	    };
+	
+	    var mouseEvent = new MouseEvent('click', {
+	        view: window,
+	        bubbles: true,
+	        cancelable: true
+	    });
+	
+	    hyperlink.dispatchEvent(mouseEvent);
     }
 }
 
