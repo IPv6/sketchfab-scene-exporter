@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.10
+// @name           sketchfab-obj-exporter-1.11
 // @description    lets you export Sketchfab scenes
 // @author         Reinitialized
 //
 //Version Number
-// @version        1.10
+// @version        1.11
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -252,7 +252,7 @@ function getElementByXpath(path) {
 }
 
 var addedDownloadButton = false;
-var downloadButtonParentXPath = "//div[@class='stats']";
+var downloadButtonParentXPath = "//div[@class='titlebar']";
 var osgScriptElementPath = "//script[contains (@src, 'sketchfab')]";
 var foundOsgScript = false;
 
