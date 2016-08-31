@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name           sketchfab-obj-exporter-1.27
+// @name           sketchfab-obj-exporter-1.28
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.27
+// @version        1.28
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -267,7 +267,7 @@ function getElementByXpath(path) {
 
 function overrideDrawImplementation() {
 	try{
-	    //console.log("Injecting OGL Draw overlay");
+	    //console.log("OGL Injection: patching OSG");
 	    var geometry = window.OSG.Geometry;
 	    var newPrototype = unfreeze(geometry.prototype);
 	    geometry.prototype = newPrototype;
@@ -296,10 +296,10 @@ function overrideDrawImplementation() {
 	            });
 	        }
 	    };
-	    console.log("Injecting OGL Draw overlay: OK! ");
+	    console.log("OGL Injection: OSG patched OK!");
 	    return true;
 	}catch(e){
-		//console.log("Injecting OGL Draw overlay: failed "+e);
+		//console.log("OGL Injection:  failed "+e);
 		return false;
 	}
 }
@@ -313,7 +313,7 @@ function tryInterceptOGL() {
 }
 
 function addOSGIntercept() {
-	console.log("Injecting OGL Draw overlay");
+	console.log("OGL Injection: replacing viewer");
 	tryInterceptOGL();
 	(function () {
 	    var scriptElement = document.createElement( "script" );
@@ -323,13 +323,14 @@ function addOSGIntercept() {
 	})();
 }
 
-console.log("Injecting OGL: initializing events");
+console.log("OGL Injection: initializing events");
 window.addEventListener('beforescriptexecute', function(e) {
-	console.log("Injecting OGL: beforescriptexecute event");
 	var src = e.target.src;
-	console.log("Injecting OGL: script: "+src);
-	if (src.indexOf("viewer") >= 0) {
-                changed++;
+	if((""+src).length == 0){
+		return;
+	}
+	console.log("OGL Injection: beforescriptexecute event: "+src);
+	if (src.indexOf("web/dist/viewer") >= 0) {
 		e.preventDefault();
 		e.stopPropagation();
 		addOSGIntercept();
@@ -337,7 +338,7 @@ window.addEventListener('beforescriptexecute', function(e) {
 }, true);
 
 document.addEventListener('DOMContentLoaded', function(e) {
-	console.log("Injecting OGL: DOMContentLoaded event");
+	console.log("OGL Injection: DOMContentLoaded event");
 	// source: http://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
 	var observeDOM = (function(){
 	    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
@@ -375,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
 	    }
 	});
 }, true);
-console.log("Injecting OGL: events initialized");
+console.log("OGL Injection: events initialized");
 
 function addDownloadButton(downloadButtonParent) {
     var downloadButton = document.createElement("a");
