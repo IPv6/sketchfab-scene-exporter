@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.51
+// @version        1.52
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -279,7 +279,6 @@ function downloadModels() {
     var combinedOBJ = '';
     var combinedMTL = '';
     models.forEach(function(model) {
-    	model.resetCaches();
     	console.log(["downloadModels",model]);
         combinedOBJ += model.obj + nl;
         combinedMTL += model.mtl + nl;
@@ -301,9 +300,10 @@ function overrideDrawImplementation() {
 	    geometry.prototype = newPrototype;
 	    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
 	    newPrototype.drawImplementation = function(a) {
-	    	console.log("OGL Injection: invoking drawImplementation, saving model");
+	    	console.log("OGL Injection: invoking drawImplementation", textureInfoForGeometry(this));
 	        this.originalDrawImplementation(a);
 	        if (!this.computedOBJ) {
+	            console.log("OGL Injection: saving model");
 	            this.computedOBJ = true;
 	            this.name = baseModelName + '-' + models.length;
 	            this.__defineGetter__("textures", function() {
@@ -320,9 +320,6 @@ function overrideDrawImplementation() {
 	                },
 	                get textures() {
 	                    return this.geom.textures;
-	                },
-	                resetCaches: function(){
-	                    this._textures = null;
 	                }
 	            });
 	        }
