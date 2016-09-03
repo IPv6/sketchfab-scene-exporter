@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.52
+// @version        1.53
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -167,7 +167,7 @@ function textureInfoForGeometry(geom) {
     if (stateset = geom.stateset) {
         if (textures = stateset.textureAttributeMapList) {
             textures.forEach(function(texture) {
-            	//console.log(["textureInfoForGeometry texture",texture]);
+            	console.log(["textureInfoForGeometry texture",texture]);
                 if (Texture = texture.Texture) {
                     if (object = Texture._object) {
                         if (texture = object._texture) {
