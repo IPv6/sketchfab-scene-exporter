@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.49
+// @version        1.51
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -279,6 +279,7 @@ function downloadModels() {
     var combinedOBJ = '';
     var combinedMTL = '';
     models.forEach(function(model) {
+    	model.resetCaches();
     	console.log(["downloadModels",model]);
         combinedOBJ += model.obj + nl;
         combinedMTL += model.mtl + nl;
@@ -319,6 +320,9 @@ function overrideDrawImplementation() {
 	                },
 	                get textures() {
 	                    return this.geom.textures;
+	                },
+	                resetCaches: function(){
+	                    this._textures = null;
 	                }
 	            });
 	        }
