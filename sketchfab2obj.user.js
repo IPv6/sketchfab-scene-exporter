@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.55
+// @version        1.56
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -172,7 +172,7 @@ function textureInfoForGeometry(geom) {
                     if (object = Texture._object) {
                         if (texture = object._texture) {
                             if (imageProxy = texture._imageProxy) {
-                            	//console.log(["textureInfoForGeometry texture",imageProxy]);
+                            	console.log(["textureInfoForGeometry texture",imageProxy]);
                                 var textureURL = imageProxy.attributes.images[imageProxy.attributes.images.length-1].url;
                                 var mtlmap = textureMTLMap[object._channelName];
                                 if(!mtlmap){
