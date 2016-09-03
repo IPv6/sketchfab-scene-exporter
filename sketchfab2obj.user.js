@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.47
+// @version        1.48
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -419,7 +419,7 @@ console.log("OGL Injection: events initialized");
 function addDownloadButton(downloadButtonParent) {
     var downloadButton = document.createElement("a");
     downloadButton.setAttribute("class", "control");
-    downloadButton.innerHTML = "<pre>OBJ-DOWNLOAD</pre>";
+    downloadButton.innerHTML = "<pre style='color=red;'>OBJ-DOWNLOAD</pre>";
     downloadButton.addEventListener("click", downloadModels , false);
     downloadButtonParent.appendChild(downloadButton);
 }
