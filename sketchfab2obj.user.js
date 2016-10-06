@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.57
+// @version        1.58
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -288,15 +288,23 @@ function downloadModels() {
     var combinedMTL = '';
     models.forEach(function(model) {
     	console.log(["downloadModels",model]);
-        combinedOBJ += model.obj + nl;
-        combinedMTL += model.mtl + nl;
+	try{
+        	combinedOBJ += model.obj + nl;
+	}catch(e){console.log(["downloadModels: obj generation failed"]);}
+        try{
+	    combinedMTL += model.mtl + nl;
+	}catch(e){console.log(["downloadModels: mtl generation failed"]);}
+	try{
         model.textures.forEach(function(texture) {
         	console.log(["downloadModels downloadFileAtURL",texture]);
         	downloadFileAtURL(texture.url, texture.filename);
         });
+	}catch(e){console.log(["downloadModels: texture downloading failed"]);}
     });
-    downloadString(baseModelName, 'obj', combinedOBJ);
-    downloadString(baseModelName, 'mtl', combinedMTL);
+    try{
+    	downloadString(baseModelName, 'obj', combinedOBJ);
+    	downloadString(baseModelName, 'mtl', combinedMTL);
+    }catch(e){console.log(["downloadModels: downloadString failed"]);}
 }
 
 ///////////////////////// HELPERS /////////////////////////////////////////////////////////////////////////
