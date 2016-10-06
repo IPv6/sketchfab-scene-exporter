@@ -4,7 +4,7 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.58
+// @version        1.59
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
@@ -102,7 +102,7 @@ function OBJforGeometry(geom) {
     for (i = 0; i < info.primitives.length; ++i) {
         var primitive = info.primitives[i];
         if (primitive.mode == 4 || primitive.mode == 5) {
-            var isTriangleStrip = primitive.mode == 5;
+            var isTriangleStrip = (primitive.mode == 5);
             for (j = 0; j + 2 < primitive.indices.length; !isTriangleStrip ? j += 3 : ++j) {
                 obj += 'f ';
                 var isOddFace = j % 2 == 1;
@@ -129,6 +129,7 @@ function OBJforGeometry(geom) {
             }
         }
         else {
+            console.log(["OBJforGeometry: unknown Primitive mode",primitive]);
             throw 'Primitive mode not implemented';
         }
     }
@@ -290,21 +291,21 @@ function downloadModels() {
     	console.log(["downloadModels",model]);
 	try{
         	combinedOBJ += model.obj + nl;
-	}catch(e){console.log(["downloadModels: obj generation failed"]);}
+	}catch(e){console.log(["downloadModels: obj generation failed",e]);}
         try{
 	    combinedMTL += model.mtl + nl;
-	}catch(e){console.log(["downloadModels: mtl generation failed"]);}
+	}catch(e){console.log(["downloadModels: mtl generation failed",e]);}
 	try{
-        model.textures.forEach(function(texture) {
-        	console.log(["downloadModels downloadFileAtURL",texture]);
-        	downloadFileAtURL(texture.url, texture.filename);
-        });
-	}catch(e){console.log(["downloadModels: texture downloading failed"]);}
+        	model.textures.forEach(function(texture) {
+        		console.log(["downloadModels downloadFileAtURL",texture]);
+        		downloadFileAtURL(texture.url, texture.filename);
+       		});
+	}catch(e){console.log(["downloadModels: texture downloading failed",e]);}
     });
     try{
     	downloadString(baseModelName, 'obj', combinedOBJ);
     	downloadString(baseModelName, 'mtl', combinedMTL);
-    }catch(e){console.log(["downloadModels: downloadString failed"]);}
+    }catch(e){console.log(["downloadModels: downloadString failed",e]);}
 }
 
 ///////////////////////// HELPERS /////////////////////////////////////////////////////////////////////////
