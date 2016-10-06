@@ -129,8 +129,9 @@ function OBJforGeometry(geom) {
             }
         }
         else {
+            // http://stackoverflow.com/questions/14503600/what-are-webgls-draw-primitives
             console.log(["OBJforGeometry: unknown Primitive mode",primitive]);
-            throw 'Primitive mode not implemented';
+            throw 'OBJforGeometry: Primitive mode not implemented';
         }
     }
     verticesExported += info.vertices.length / 3.0;
@@ -291,16 +292,23 @@ function downloadModels() {
     	console.log(["downloadModels",model]);
 	try{
         	combinedOBJ += model.obj + nl;
-	}catch(e){console.log(["downloadModels: obj generation failed",e]);}
+	}catch(e){
+		console.log(["downloadModels: obj generation failed, skipping model",e]);
+		continue;
+	}
         try{
 	    combinedMTL += model.mtl + nl;
-	}catch(e){console.log(["downloadModels: mtl generation failed",e]);}
+	}catch(e){
+		console.log(["downloadModels: mtl generation failed",e]);
+	}
 	try{
         	model.textures.forEach(function(texture) {
         		console.log(["downloadModels downloadFileAtURL",texture]);
         		downloadFileAtURL(texture.url, texture.filename);
        		});
-	}catch(e){console.log(["downloadModels: texture downloading failed",e]);}
+	}catch(e){
+		console.log(["downloadModels: texture downloading failed",e]);
+	}
     });
     try{
     	downloadString(baseModelName, 'obj', combinedOBJ);
