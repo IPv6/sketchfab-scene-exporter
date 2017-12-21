@@ -12,9 +12,8 @@
 // @grant unsafeWindow
 // ==/UserScript==
 
-console.log("OGL Injection: init");
 srcWnd = unsafeWindow; // window
-console.log("OGL Injection: srcWnd="+srcWnd);
+console.log("OGL Injection: Initializing with window",srcWnd);
 
 // source: http://stackoverflow.com/a/8485137
 function safeName(s) {
