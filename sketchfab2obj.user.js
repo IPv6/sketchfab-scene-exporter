@@ -3,15 +3,21 @@
 // @description    Save Sketchfab models as obj
 // @author         <anonimus>
 //
-//Version Number
-// @version        1.60
+// Version Number
+// @version        1.62
 //
 // Urls process this user script on
 // @include        /^https?://(www\.)?sketchfab\.com/models/.*
 // @run-at         document-start
-// @grant none
+// @grant unsafeWindow
 // ==/UserScript==
 
+console.log("OGL Injection: init");
+srcWnd = unsafeWindow; // window
+console.log("OGL Injection: srcWnd="+srcWnd);
+srcWnd.alert("???");
+
+/*
 // source: http://stackoverflow.com/a/8485137
 function safeName(s) {
     return s.replace(/[^a-zA-Z0-9]/gi, '_').toLowerCase();
@@ -36,7 +42,7 @@ function getElementByXpath(path) {
 
 ////////////////////// OBJ STUFF /////////////////////////////////////////////////////////////////////////
 var models = [];
-window._OSL_models = models;
+srcWnd._OSL_models = models;
 var baseModelName = "unknown";
 function InfoForGeometry(geom) {
     //console.log(["InfoForGeometry",geom]);
@@ -239,17 +245,17 @@ function downloadString(filename, ext, str) {
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
     downloadLink.innerHTML = "Download File";
-    if (window.webkitURL != null)
+    if (srcWnd.webkitURL != null)
     {
         // Chrome allows the link to be clicked
         // without actually adding it to the DOM.
-        downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+        downloadLink.href = srcWnd.webkitURL.createObjectURL(textFileAsBlob);
     }
     else
     {
         // Firefox requires the link to be added to the DOM
         // before it can be clicked.
-        downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        downloadLink.href = srcWnd.URL.createObjectURL(textFileAsBlob);
         downloadLink.onclick = destroyClickedElement;
         downloadLink.style.display = "none";
         document.body.appendChild(downloadLink);
@@ -273,7 +279,7 @@ function downloadFileAtURL(fileURL, fileName) {
 	    };
 	
 	    var mouseEvent = new MouseEvent('click', {
-	        view: window,
+	        view: srcWnd,
 	        bubbles: true,
 	        cancelable: true
 	    });
@@ -321,7 +327,7 @@ function downloadModels() {
 function overrideDrawImplementation() {
 	try{
 	    console.log("OGL Injection: patching OSG");
-	    var geometry = window.OSG.Geometry;
+	    var geometry = srcWnd.OSG.Geometry;
 	    var newPrototype = unfreeze(geometry.prototype);
 	    geometry.prototype = newPrototype;
 	    newPrototype.originalDrawImplementation = newPrototype.drawImplementation;
@@ -359,10 +365,10 @@ function overrideDrawImplementation() {
 }
 
 var drawOverrided = false;
-window.stealOSG = function(k){
+srcWnd.stealOSG = function(k){
 	//console.log("OGL Injection: osg intercept");
 	if(drawOverrided == false && k.osg){
-		window.OSG = k.osg;
+		srcWnd.OSG = k.osg;
 		if(overrideDrawImplementation()){
 			drawOverrided = true;
 		}
@@ -375,8 +381,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
 	baseModelName = safeName(document.title.replace(' - Sketchfab', ''));
 	// source: http://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
 	var observeDOM = (function(){
-	    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
-	        eventListenerSupported = window.addEventListener;
+	    var MutationObserver = srcWnd.MutationObserver || srcWnd.WebKitMutationObserver,
+	        eventListenerSupported = srcWnd.addEventListener;
 	
 	    return function(obj, callback){
 	        if( MutationObserver ){
@@ -411,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
 	});
 }, true);
 
-window.addEventListener('beforescriptexecute', function(e) {
+srcWnd.addEventListener('beforescriptexecute', function(e) {
 	var src = e.target.src;
 	if((""+src).length == 0){
 		return;
@@ -450,3 +456,5 @@ function addDownloadButton(downloadButtonParent) {
     downloadButton.addEventListener("click", downloadModels , false);
     downloadButtonParent.appendChild(downloadButton);
 }
+
+*/
