@@ -15,9 +15,7 @@
 console.log("OGL Injection: init");
 srcWnd = unsafeWindow; // window
 console.log("OGL Injection: srcWnd="+srcWnd);
-srcWnd.alert("???");
 
-/*
 // source: http://stackoverflow.com/a/8485137
 function safeName(s) {
     return s.replace(/[^a-zA-Z0-9]/gi, '_').toLowerCase();
@@ -457,4 +455,3 @@ function addDownloadButton(downloadButtonParent) {
     downloadButtonParent.appendChild(downloadButton);
 }
 
-*/
