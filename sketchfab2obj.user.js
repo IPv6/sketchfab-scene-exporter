@@ -4,10 +4,10 @@
 // @author         <anonimus>
 //
 //Version Number
-// @version        1.59
+// @version        1.60
 //
 // Urls process this user script on
-// @include        /^https?://(www\.)?sketchfab\.com/models/.*/embed.*$/
+// @include        /^https?://(www\.)?sketchfab\.com/models/.*
 // @run-at         document-start
 // @grant none
 // ==/UserScript==
@@ -154,8 +154,9 @@ var textureMTLMap = {
 function baseName(str)
 {
    var base = new String(str).substring(str.lastIndexOf('/') + 1); 
-    if(base.lastIndexOf(".") != -1)       
+    if(base.lastIndexOf(".") != -1){
         base = base.substring(0, base.lastIndexOf("."));
+    }
    return base;
 }
 
@@ -294,7 +295,7 @@ function downloadModels() {
         	combinedOBJ += model.obj + nl;
 	}catch(e){
 		console.log(["downloadModels: obj generation failed, skipping model",e]);
-		continue;
+		return;
 	}
         try{
 	    combinedMTL += model.mtl + nl;
@@ -391,20 +392,20 @@ document.addEventListener('DOMContentLoaded', function(e) {
 	            obj.addEventListener('DOMNodeInserted', callback, false);
 	            obj.addEventListener('DOMNodeRemoved', callback, false);
 	        }
-	    }
+	    };
 	})();
 
 	var addedDownloadButton = false;
 	var downloadButtonParentXPath = "//div[@class='titlebar']";
 	observeDOM(document.body, function(){ 
 	    if (!addedDownloadButton) {
-	        if (downloadButtonParent = getElementByXpath(downloadButtonParentXPath))
-	        {
+            downloadButtonParent = getElementByXpath(downloadButtonParentXPath);
+	        if (downloadButtonParent){
 			//addOSGIntercept();
 	        	setTimeout(function () {
 	        		addDownloadButton(downloadButtonParent);
 	        	}, 2000);
-			addedDownloadButton = true;
+                addedDownloadButton = true;
 	        }
 	    }
 	});
