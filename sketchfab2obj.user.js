@@ -1,3 +1,7 @@
+DOES NOT WORK ANYMORE
+
+
+/*
 // ==UserScript==
 // @name           sketchfab2obj
 // @description    Save Sketchfab models as obj
@@ -453,4 +457,4 @@ function addDownloadButton(downloadButtonParent) {
     downloadButton.addEventListener("click", downloadModels , false);
     downloadButtonParent.appendChild(downloadButton);
 }
-
+*/
